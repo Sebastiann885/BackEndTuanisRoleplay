@@ -1,9 +1,9 @@
 from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker, declarative_base
+from sqlalchemy.orm import sessionmaker, declarative_base, Session
 from dotenv import load_dotenv
 import os
-from dotenv import load_dotenv
 from urllib.parse import quote_plus
+
 load_dotenv()
 
 DB_HOST = os.getenv("DB_HOST")
@@ -20,4 +20,13 @@ DATABASE_URL = (
 
 engine = create_engine(DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+
 Base = declarative_base()
+
+# ✅ ESTA FUNCIÓN ES LA QUE FALTABA
+def get_db():
+    db: Session = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
